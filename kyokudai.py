@@ -14,7 +14,7 @@ def input_csv(name1, name2, name3):
     csv_1 = pd.read_csv("csv_data/" + name1 + ".csv", nrows=step_size)
     csv_2 = pd.read_csv("csv_data/" + name2 + ".csv", nrows=step_size)
     csv_3 = pd.read_csv("csv_data/" + name3 + ".csv", nrows=step_size)
-    return name1, name2, name3, csv_1, csv_2, csv_3
+    return csv_1, csv_2, csv_3
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
 
@@ -103,6 +103,10 @@ def Wave_List(plot_move, plot_not_move):
 
 
 # cols = ["Time (s)", "Linear Acceleration x (m/s^2)","Linear Acceleration y (m/s^2)","Linear Acceleration z (m/s^2)","Absolute acceleration (m/s^2)"]
+name1 = "hiromu1"
+name2 = "hiromu2"
+name3 = "hiromu3"
+
 step_size = 1200                                            ## リストの要素数
 
 x_label = "Linear Acceleration x (m/s^2)"                   ## csv の Xラベル
@@ -114,7 +118,7 @@ order_number = 70
 first_step = 400
 end_step = 800
 
-name1, name2, name3, csv_1, csv_2, csv_3 = input_csv("kouhai1", "kouhai2", "kouhai3")
+csv_1, csv_2, csv_3 = input_csv("kouhai1", "kouhai2", "kouhai3")
 
 step_csv = input_step()
 
