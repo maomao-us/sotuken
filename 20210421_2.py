@@ -30,7 +30,7 @@ def MIN_EV(data):
             for k in range(len(list) - 1, j, -1):
                 if list[k] < list[k - 1]:
                     list[k], list[k - 1] =  list[k - 1], list[k]
-        
+
         # 照合
         if list[0] == data[i] and -2 > data[i] :
             min_ev.append(data[i])
@@ -38,8 +38,28 @@ def MIN_EV(data):
         # 格納したデータをリセット
         list.clear()
 
-    min_ev.pop(len(min_ev) - 1)
-    step_list.pop(len(step_list) - 1)
+    # 前後20個のデータを格納 --> 絶対値
+    for i in range(10, len(data) - 21):
+        for j in range(i - 10, i + 10):
+            list.append(data[j])
+
+        # バブルソート
+        for j in range(len(list)):
+            for k in range(len(list) - 1, j, -1):
+                if list[k] < list[k - 1]:
+                    list[k], list[k - 1] =  list[k - 1], list[k]
+
+        # 照合
+        if list[len(list) - 1] == data[i] and 20 < data[i] :
+            min_ev.append(data[i])
+            step_list.append(step[i])
+        # 格納したデータをリセット
+        list.clear()
+
+    # min_ev.pop(len(min_ev) - 1)
+    # min_ev.pop(len(min_ev) - 1)
+    # step_list.pop(len(step_list) - 1)
+    # step_list.pop(len(step_list) - 1)
     min_ev = np.array(min_ev)
     return min_ev, step_list
 
@@ -47,21 +67,21 @@ def MIN_EV(data):
 ##################################################################################################################################################
 ##################################################################################################################################################
 def input_csv():
-    with open("output/" + csv_file + ".csv", "w", newline="") as f:
+    with open("output2/" + csv_file + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(ev)
 
 # ここから本番
 ##################################################################################################################################################
 file_name = ["hiromu1", "kouhai1"]
-csv_file ="sma_abs1"
+csv_file ="wma_abs2"
 label = ["Time (s)", "Linear Acceleration x (m/s^2)", "Linear Acceleration y (m/s^2)", "Linear Acceleration z (m/s^2)", "Absolute acceleration (m/s^2)"]
 label_number = 4
 average_count = 5
 window = 5
 
-file_number = 0
-average_number = 0
+file_number = 1
+average_number = 1
 df = pd.read_csv("csv_data/" + file_name[file_number] + ".csv")
 
 step = []
