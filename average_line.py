@@ -5,6 +5,7 @@ import pprint
 import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error
+import itertools
 
 
 # 空リストを生成して要素をぶち込む関数
@@ -49,7 +50,7 @@ y_label = "Linear Acceleration y (m/s^2)"
 z_label = "Linear Acceleration z (m/s^2)"
 abs_label = "Absolute acceleration (m/s^2)"
 step_size = 1200
-window = 10
+window = 5
 span_size = 5
 
 csv_1 = pd.read_csv("csv_data/kouhai1.csv")
@@ -71,6 +72,8 @@ kouhai_ewm = []
 ewm_data = csv_1[x_label].ewm(span = span_size, adjust=False).mean()
 for i in range(step_size):
     kouhai_ewm.append(ewm_data[i])
+
+
 
 
 # グラフにして保存する関数

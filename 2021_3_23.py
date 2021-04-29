@@ -1,19 +1,19 @@
 import csv
-from operator import le 
+# from operator import le
 import numpy as np
 import matplotlib.pyplot as plt
-import pprint
+# import pprint
 import pandas as pd
-from sklearn.metrics import r2_score
+# from sklearn.metrics import r2_score
 from scipy import signal
 from sklearn import preprocessing
-from scipy.stats import zscore
+# from scipy.stats import zscore
 
 
 # ステップ数と単純移動平均法
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
-def step_and_sma(csv):
+def step_and_sma(csv, window):
     sma = []
     step = []
     rolling_list = csv[x_label].rolling(window, min_periods=1).mean()
@@ -21,7 +21,7 @@ def step_and_sma(csv):
         sma.append(rolling_list[i])
         step.append(i + 1)
     sma = np.array(sma)
-    sma = zscore(sma)
+    # sma = zscore(sma)
     step = np.array(step)
     return sma, step
 # -------------------------------------------------------------------------------------------------
@@ -31,8 +31,11 @@ def step_and_sma(csv):
 # 極限のステップ数を出す関数
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
-def min_csv(list):
+def max_min(list):
+    # max = signal.argrelmax(list, order=order_number)
     min = signal.argrelmin(list, order=order_number)
+    # return max, min
+    # return max
     return min
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
@@ -54,7 +57,7 @@ def FEV_to_EEV(data, first, end):
 # -------------------------------------------------------------------------------------------------
 
 
-# 極値とそのステップを格納
+# 極値〜極値の部分とそのステップを格納
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
 def EV_STEP(data):
@@ -81,59 +84,74 @@ def EV_STEP(data):
 
 # 序章
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-name1 = "hiromu1"
-name2 = "kouhai1"
-order_number = 30
-window = 10
+name1 = "csv_data/hiromu1.csv"
+name2 = "csv_data/nakajima1.csv"
+order_number = 50
 x_label = "Linear Acceleration x (m/s^2)"
 
-hiromu_csv = pd.read_csv("csv_data/" + name1 + ".csv")
-kouhai_csv = pd.read_csv("csv_data/" + name2 + ".csv")
+csv_1 = pd.read_csv(name1)
+csv_2 = pd.read_csv(name2)
 
-hiromu_sma, hiromu_step = step_and_sma(hiromu_csv)
-kouhai_sma, kouhai_step = step_and_sma(kouhai_csv)
+sma_1, step_1 = step_and_sma(csv_1, 10)
+sma_2, step_2 = step_and_sma(csv_2, 10)
 
-# hiromu_min = min_csv(hiromu_sma)
-# kouhai_min = min_csv(kouhai_sma)
+# max_1, min_1 = max_min(sma_1)
+# max_2, min_2 = max_min(sma_2)
 
-# print("hiromu 極小値 : ", hiromu_min[0])
-# print("\n")
-# print("kouhai 極小値 : ", kouhai_min[0])
+# max_1 = max_min(sma_1)
+# max_2 = max_min(sma_2)
 
-# plt.plot(hiromu_step, hiromu_sma, "r", label = name1)
-# plt.plot(hiromu_step[hiromu_min], hiromu_sma[hiromu_min], "ro")
-# plt.plot(kouhai_step, kouhai_sma, "b", label = name1)
-# plt.plot(kouhai_step[kouhai_min], kouhai_sma[kouhai_min], "bo")
-# plt.legend()
-# plt.grid()
-# plt.show()
+min_1 = max_min(sma_1)
+min_2 = max_min(sma_2)
+
+# print("hiromu 極大値 : ", max_1[0])
+print("hiromu 極小値 : ", min_1[0])
+print("\n")
+# print("kouhai 極大値 : ", max_2[0])
+print("nakajima 極小値 : ", min_2[0])
+
+plt.plot(step_1, sma_1, "r", label = "hiromu")
+plt.plot(step_2, sma_2, "b", label = "nakajima")
+# plt.plot(step_1[max_1], sma_1[max_1], "ro")
+# plt.plot(step_2[max_2], sma_2[max_2], "bo")
+plt.plot(step_1[min_1], sma_1[min_1], "ro")
+plt.plot(step_2[min_2], sma_2[min_2], "bo")
+plt.legend()
+plt.grid()
+plt.show()
 
 
 # 終章
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ev_1, ev_step1 = FEV_to_EEV(sma_1, 524, 640)
+ev_2, ev_step2 = FEV_to_EEV(sma_2, 490, 673)
 
+ev_1_data, step_1_list = EV_STEP(ev_1)
+ev_2_data, step_2_list = EV_STEP(ev_2)
 
-hiromu_ev, hiromu_evstep = FEV_to_EEV(hiromu_sma, 524, 640)
-kouhai_ev, kouhai_evstep = FEV_to_EEV(kouhai_sma, 462, 689)
+print(ev_1_data)
+print(ev_2_data)
+# print(step_1_list)
+# print(step_2_list)
 
-hiromu_ev_data, hiromu_step_list = EV_STEP(hiromu_ev)
-kouhai_ev_data, kouhai_step_list = EV_STEP(kouhai_ev)
+def input_ev(sma, ev1, ev2, ev3):
+    list = [-sma[ev1], -sma[ev2], -sma[ev3]]
+    list = np.array(list)
+    print(list)
+    return list
 
-print(hiromu_ev_data)
-print(kouhai_ev_data)
-# print(hiromu_step_list)
-# print(kouhai_step_list)
+# input_ev(sma_2, 490, 579, 673)
 
-hiromu_min = min_csv(hiromu_ev)
-kouhai_min = min_csv(kouhai_ev)
+min_1 = max_min(ev_1)
+min_2 = max_min(ev_2)
 
-# print(hiromu_min[0])
-# print(kouhai_min[0])
+# print(min_1[0])
+# print(min_2[0])
 
-# plt.plot(hiromu_evstep, hiromu_ev, "r", label = name1)
-# plt.plot(hiromu_evstep[hiromu_min], hiromu_ev[hiromu_min], "ro")
-# plt.plot(kouhai_evstep, kouhai_ev, "b", label = name1)
-# plt.plot(kouhai_evstep[kouhai_min], kouhai_ev[kouhai_min], "bo")
+# plt.plot(ev_step1, ev_1, "r", label = name1)
+# plt.plot(ev_step1[min_1], ev_1[min_1], "ro")
+# plt.plot(ev_step2, ev_2, "b", label = name1)
+# plt.plot(ev_step2[min_2], ev_2[min_2], "bo")
 # plt.legend()
 # plt.grid()
 # plt.show()
@@ -166,4 +184,4 @@ def ev_mean_std(list_ev1, list_ev2):
         print("残念　(*´Д｀)　")
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
-ev_mean_std(hiromu_ev_data, kouhai_ev_data)
+# ev_mean_std(ev_1_data, ev_2_data)

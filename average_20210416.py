@@ -20,17 +20,17 @@ def WMA(csv):
 def sma(count):
     sma = csv_1[label[label_number]].rolling(window, center =True, min_periods=1).mean()
     wma = csv_1[label[label_number]].rolling(window, min_periods=1).apply(WMA)
-    ewm = csv_1[label[label_number]].ewm(span = window, adjust=False).mean()
+    ewa = csv_1[label[label_number]].ewm(span = window, adjust=False).mean()
 
     for i in range(count - 1):
         sma = sma.rolling(window, center = True, min_periods=1).mean()
         wma = wma.rolling(window, min_periods=1).apply(WMA)
-        ewm = ewm.ewm(span = window, adjust=False).mean()
+        ewa = ewa.ewm(span = window, adjust=False).mean()
     sma = np.array(sma)
     wma = np.array(wma)
-    ewm = np.array(ewm)
+    ewa = np.array(ewa)
 
-    return sma, wma, ewm
+    return sma, wma, ewa
 
 # ずらして一致させる関数
 ##################################################################################################################################################
@@ -54,10 +54,12 @@ def graph(step, data1, data2, data3, data4):
     plt.plot(step, data1, label = "original")
     plt.plot(step, data2, label = "sma")
     plt.plot(step, data3, label = "wma")
-    plt.plot(step, data4, label = "ewm")
+    plt.plot(step, data4, label = "ewa")
     plt.legend()
     plt.grid()
     plt.show()
+    # fig.savefig("graph/KP2_20210416_average.png")
+    # fig.savefig("graph/KP2_20210416_average.eps")
 
 # データを別々にグラフ化
 ##################################################################################################################################################
@@ -73,7 +75,7 @@ def individual_graph(step, data1, data2, data3, data4):
     ax4 = fig.add_subplot(2, 2, 4)
 
     c1,c2,c3,c4 = "blue","green","red","black"      # 各プロットの色
-    l1,l2,l3,l4 = "original","sma","wma","ewm"      # 各ラベル
+    l1,l2,l3,l4 = "original","sma","wma","ewa"      # 各ラベル
 
     ax1.plot(step, data1, color=c1, label=l1)
     ax1.grid(True)
@@ -95,21 +97,27 @@ def individual_graph(step, data1, data2, data3, data4):
 ##################################################################################################################################################
 ##################################################################################################################################################
 def write_csv_title():
-    if component == "x":
-        with open("csv_data/x_average.csv", "w") as f:
-            print("file", "sma", "wma", "ewm", file=f)
+    for i in range(4):
+        what_component = component[i]
+        if what_component == "x":
+            with open("csv_data/x_average.csv", "w") as f:
+                writer = csv.writer(f)
+                writer.writerow(["file", "sma", "wma", "ewa"])
 
-    elif component == "y":
-        with open("csv_data/y_average.csv", "w") as f:
-            print("file", "sma", "wma", "ewm", file=f)
+        elif what_component == "y":
+            with open("csv_data/y_average.csv", "w") as f:
+                writer = csv.writer(f)
+                writer.writerow(["file", "sma", "wma", "ewa"])
 
-    elif component == "z":
-        with open("csv_data/z_average.csv", "w") as f:
-            print("file", "sma", "wma", "ewm", file=f)
+        elif what_component == "z":
+            with open("csv_data/z_average.csv", "w") as f:
+                writer = csv.writer(f)
+                writer.writerow(["file", "sma", "wma", "ewa"])
 
-    elif component == "abs":
-        with open("csv_data/abs_average.csv", "w") as f:
-            print("file", "sma", "wma", "ewm", file=f)
+        elif what_component == "abs":
+            with open("csv_data/abs_average.csv", "w") as f:
+                writer = csv.writer(f)
+                writer.writerow(["file", "sma", "wma", "ewa"])
 
 
 
@@ -118,33 +126,39 @@ def write_csv_title():
 ##################################################################################################################################################
 ##################################################################################################################################################
 def write_csv():
-    if component == "x":
-        with open("csv_data/x_average.csv", "a") as f:
-            print(file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewm_2), file=f)
+    for i in range(4):
+        what_component = component[i]
+        if what_component == "x":
+            with open("csv_data/x_average.csv", "a") as f:
+                writer = csv.writer(f)
+                writer.writerow([file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewa_2)])
 
-    elif component == "y":
-        with open("csv_data/y_average.csv", "a") as f:
-            print(file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewm_2), file=f)
+        elif what_component == "y":
+            with open("csv_data/y_average.csv", "a") as f:
+                writer = csv.writer(f)
+                writer.writerow([file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewa_2)])
 
-    elif component == "z":
-        with open("csv_data/z_average.csv", "a") as f:
-            print(file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewm_2), file=f)
+        elif what_component == "z":
+            with open("csv_data/z_average.csv", "a") as f:
+                writer = csv.writer(f)
+                writer.writerow([file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewa_2)])
 
-    elif component == "abs":
-        with open("csv_data/abs_average.csv", "a") as f:
-            print(file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewm_2), file=f)
+        elif what_component == "abs":
+            with open("csv_data/abs_average.csv", "a") as f:
+                writer = csv.writer(f)
+                writer.writerow([file_name, 1 - r2_score(df_1, sma_2), 1 - r2_score(df_1, wma_2), 1 - r2_score(df_1, ewa_2)])
 
 # 定義
 ##################################################################################################################################################
-file_name = "kouhai3"
+file_name = "hiromu1"
 
 label = ["Linear Acceleration x (m/s^2)", "Linear Acceleration y (m/s^2)", "Linear Acceleration z (m/s^2)", "Absolute acceleration (m/s^2)"]
-label_number = 0
+label_number = 1
 
 average_count = 5
-window = 5
+window = 3
 
-component = "abs"
+component = ["x", "y", "z", "abs"]
 
 
 # csvの読み込みとリスト化
@@ -162,29 +176,30 @@ step_1 = np.array(step_1)
 
 # 移動平均のデータを出力
 ##################################################################################################################################################
-sma_1, wma_1, ewm_1 = sma(average_count)
+sma_1, wma_1, ewa_1 = sma(average_count)
 
 # 一致させたデータを出力
 ##################################################################################################################################################
-print("sma_2")
-sma_2 = roll(sma_1)
-print("\n")
-print("wma_2")
-wma_2 = roll(wma_1)
-print("\n")
-print("ewm_2")
-ewm_2 = roll(ewm_1)
-print("\n")
+# print("sma_2")
+# sma_2 = roll(sma_1)
+# print("\n")
+# print("wma_2")
+# wma_2 = roll(wma_1)
+# print("\n")
+# print("ewa_2")
+# ewa_2 = roll(ewa_1)
+# print("\n")
 
 # 個々のグラフを出力
 ##################################################################################################################################################
-# individual_graph(step_1, df_1, sma_2, wma_2, ewm_2)
+# individual_graph(step_1, df_1, sma_2, wma_2, ewa_2)
+graph(step_1, df_1, sma_1, wma_1, ewa_1)
 
 # originalとの誤差を出力
 ##################################################################################################################################################
-print(1 - r2_score(df_1, sma_2))
-print(1 - r2_score(df_1, wma_2))
-print(1 - r2_score(df_1, ewm_2))
+# print(1 - r2_score(df_1, sma_2))
+# print(1 - r2_score(df_1, wma_2))
+# print(1 - r2_score(df_1, ewa_2))
 
 #csvのラベルかっこみ
 ##################################################################################################################################################
@@ -192,4 +207,4 @@ print(1 - r2_score(df_1, ewm_2))
 
 # csvに追加
 ##################################################################################################################################################
-write_csv()
+# write_csv()
