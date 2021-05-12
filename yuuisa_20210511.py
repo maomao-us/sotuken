@@ -4,6 +4,7 @@ import pandas as pd
 
 # 定義
 ##################################################################################################################################################
+name = ["horinouti", "kawamura", "horinouti", "kutukake", "takenaka", "horinouti", "horinouti", "yamanada"]
 index_2 = ["2x", "2y", "2z", "2abs"]
 index_22 = ["2xx", "2yy", "2zz", "2absabs"]
 
@@ -14,7 +15,7 @@ index_4 = ["4x", "4y", "4z", "4abs"]
 index_44 = ["4xx", "4yy", "4zz", "4absabs"]
 
 index_5 = ["5x", "5y", "5z", "5abs"]
-index_55 = ["5xx", "5yy", "5zz", "5absabs"]
+index_22 = ["5xx", "5yy", "5zz", "5absabs"]
 
 t = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, \
         2.201, 2.179, 2.160, 2.145, 2.131, 2.120, 2.110, 2.101, 2.093, 2.086, \
@@ -32,13 +33,13 @@ label_number = 0
 ##################################################################################################################################################
 def kentei_1():
     global label_number
-    with open("kentei_data/inoue/inoue_kentei" + index_5[label_number] + ".csv", "w", newline="") as f:
+    with open("kentei_data/horinouti/horinouti_kentei" + index_2[label_number] + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["m", "n", "times", "F"])
 
     col_names = ['c{0:02d}'.format(i) for i in range(20)]
-    file_name = "inoue_ev" + index_5[label_number]
-    df = pd.read_csv("sotuken_data/inoue/" + file_name + ".csv", header=None, names = col_names)
+    file_name = "horinouti_ev" + index_2[label_number]
+    df = pd.read_csv("sotuken_data/horinouti/" + file_name + ".csv", header=None, names = col_names, engine = "python")
 
     data1 = []
     data2 = []
@@ -64,7 +65,7 @@ def kentei_1():
             std = ((len(data1) - 1)*(std_data1) + (len(data2) - 1)*(std_data2)) / (len(data1) + len(data2) - 2)
             T = (mean_data1 - mean_data2) / (((1/len(data1)) + (1/len(data2)))*std)**(1/2)
 
-            with open("kentei_data/inoue/inoue_kentei"+ index_5[label_number] + ".csv", "a") as f:
+            with open("kentei_data/horinouti/horinouti_kentei"+ index_2[label_number] + ".csv", "a") as f:
                 writer = csv.writer(f)
                 writer.writerow([len(data1), len(data2), k + 1,T])
 
@@ -75,13 +76,13 @@ def kentei_1():
 ##################################################################################################################################################
 ##################################################################################################################################################
 def kentei_2(m):
-    with open("kentei_data/inoue/inoue_kentei" + index_5[m] + ".csv", "w", newline="") as f:
+    with open("kentei_data/horinouti/horinouti_kentei" + index_2[m] + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["m", "n", "times", "F"])
 
     col_names = ['c{0:02d}'.format(i) for i in range(20)]
-    file_name = "inoue_ev" + index_55[m]
-    df = pd.read_csv("sotuken_data/inoue/" + file_name + ".csv", header=None, names = col_names)
+    file_name = "horinouti_ev" + index_22[m]
+    df = pd.read_csv("sotuken_data/horinouti/" + file_name + ".csv", header=None, names = col_names, engine = "python")
 
     data1 = []
     data2 = []
@@ -107,7 +108,7 @@ def kentei_2(m):
             std = ((len(data1) - 1)*(std_data1) + (len(data2) - 1)*(std_data2)) / (len(data1) + len(data2) - 2)
             T = (mean_data1 - mean_data2) / (((1/len(data1)) + (1/len(data2)))*std)**(1/2)
 
-            with open("kentei_data/inoue/inoue_kentei"+ index_5[m] + ".csv", "a") as f:
+            with open("kentei_data/horinouti/horinouti_kentei"+ index_2[m] + ".csv", "a") as f:
                 writer = csv.writer(f)
                 writer.writerow([len(data1), len(data2), k + 1,T])
 
@@ -127,8 +128,8 @@ def yuuisa():
         global label_number
 
 
-        file_name = "inoue_kentei" + index_5[label_number]
-        df = pd.read_csv("kentei_data/inoue/" + file_name + ".csv")
+        file_name = "horinouti_kentei" + index_2[label_number]
+        df = pd.read_csv("kentei_data/horinouti/" + file_name + ".csv")
 
         data_0 = df["m"]
         data_0 = np.array(data_0)
@@ -296,17 +297,38 @@ def yuuisa():
         print(list)
 
         if max(list) >= 1:
+            if yuuisa_number == 0:
+                with open("yuuisa_data/horinouti/horinouti_" + index_2[label_number] + ".csv", "w", newline = "") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(list)
+            elif yuuisa_number >= 1:
+                with open("yuuisa_data/horinouti/horinouti_" + index_2[label_number] + ".csv", "a", newline = "") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(list)
             size -= 1
             col_names = ['c{0:02d}'.format(i) for i in range(20)]
-            df = pd.read_csv("sotuken_data/inoue/inoue_ev" + index_55[label_number] + ".csv", header=None, names = col_names)
+            df = pd.read_csv("sotuken_data/horinouti/horinouti_ev" + index_22[label_number] + ".csv", header=None, names = col_names, engine = "python")
             df = df.drop(list.index(max(list)), axis=0)
-            df.to_csv("sotuken_data/inoue/inoue_ev" + index_55[label_number] + ".csv", header=None, index = False)
+            df.to_csv("sotuken_data/horinouti/horinouti_ev" + index_22[label_number] + ".csv", header=None, index = False)
+
+            df = pd.read_csv("step/horinouti/horinouti_step" + index_22[label_number] + ".csv", header=None, names = col_names, engine = "python")
+            df = df.drop(list.index(max(list)), axis=0)
+            df.to_csv("step/horinouti/horinouti_step" + index_22[label_number] + ".csv", header=None, index = False)
             yuuisa_number += 1
             list.clear()
             kentei_2(label_number)
 
         elif max(list) == 0:
-            print(yuuisa_number)
+            if yuuisa_number == 0:
+                print(yuuisa_number)
+                with open("yuuisa_data/horinouti/horinouti_" + index_2[label_number] + ".csv", "w", newline = "") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(list)
+            elif yuuisa_number >= 1:
+                print(yuuisa_number)
+                with open("yuuisa_data/horinouti/horinouti_" + index_2[label_number] + ".csv", "a", newline = "") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(list)
             list.clear()
             yuuisa_number = 0
             size = 20
@@ -314,8 +336,11 @@ def yuuisa():
 
 for l in range(4):
     col_names = ['c{0:02d}'.format(i) for i in range(20)]
-    df = pd.read_csv("sotuken_data/inoue/inoue_ev" + index_5[label_number] + ".csv", header=None, names = col_names)
-    df.to_csv("sotuken_data/inoue/inoue_ev" + index_55[label_number] + ".csv", header=None, index = False)
+    df = pd.read_csv("sotuken_data/horinouti/horinouti_ev" + index_2[label_number] + ".csv", header=None, names = col_names, engine = "python")
+    df.to_csv("sotuken_data/horinouti/horinouti_ev" + index_22[label_number] + ".csv", header=None, index = False)
+
+    df = pd.read_csv("step/horinouti/horinouti_step" + index_2[label_number] + ".csv", header=None, names = col_names, engine = "python")
+    df.to_csv("step/horinouti/horinouti_step" + index_22[label_number] + ".csv", header=None, index = False)
     kentei_1()
     yuuisa()
-    label_number +=1
+    label_number += 1
